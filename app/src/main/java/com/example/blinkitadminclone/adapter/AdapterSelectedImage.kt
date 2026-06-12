@@ -1,0 +1,36 @@
+package com.example.blinkitadminclone.adapter
+
+import android.net.Uri
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.example.blinkitadminclone.databinding.ItemViewImageSelectionBinding
+
+class AdapterSelectedImage(
+    private val imageUris: ArrayList<Uri>
+) : RecyclerView.Adapter<AdapterSelectedImage.SelectedImageViewHolder>() {
+
+    class SelectedImageViewHolder(val binding: ItemViewImageSelectionBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectedImageViewHolder {
+        val binding = ItemViewImageSelectionBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return SelectedImageViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: SelectedImageViewHolder, position: Int) {
+        val imageUri = imageUris[position]
+        holder.binding.ivImage.setImageURI(imageUri)
+        holder.binding.closeButton.setOnClickListener {
+            imageUris.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, imageUris.size)
+        }
+    }
+
+    override fun getItemCount(): Int = imageUris.size
+}

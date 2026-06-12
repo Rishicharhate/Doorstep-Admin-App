@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Icon to display when clicked/selected -->
+    <item android:drawable="@drawable/home_filled" android:state_checked="true" />
+
+    <!-- Default icon to display when not clicked -->
+    <item android:drawable="@drawable/home_outline" android:state_checked="false" />
+</selector>
