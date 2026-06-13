@@ -1,82 +1,58 @@
 package com.example.blinkitadminclone.auth
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.blinkitadminclone.R
+import com.example.blinkitadminclone.activity.UserMainActivity
 import com.example.blinkitadminclone.viewmodels.AuthViewModel
-import com.example.blinkitadminclone.viewmodels.AuthState
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
+import com.example.blinkitadminclone.viewmodels.NavigationEvent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashFragment : Fragment() {
 
-    private lateinit var etUserEmail: TextInputEditText
-    private lateinit var continueButton: MaterialButton
     private val viewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val view = inflater.inflate(R.layout.fragment_signin, container, false)
-
-        etUserEmail = view.findViewById(R.id.etUserEmail)
-        continueButton = view.findViewById(R.id.continueButton)
-
-        continueButton.setOnClickListener {
-            val email = etUserEmail.text.toString().trim()
-
-            if (email.isEmpty()) {
-                etUserEmail.error = "Enter email"
-                return@setOnClickListener
-            }
-
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                etUserEmail.error = "Enter valid email"
-                return@setOnClickListener
-            }
-
-            viewModel.sendOtp(email)
-        }
-
-        observeState()
-
-        return view
+    ): View? {
+        return inflater.inflate(R.layout.fragment_splash, container, false)
     }
 
-    private fun observeState() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        observeNavigationEvents()
+
+        lifecycleScope.launch {
+            delay(2000) // 2 seconds splash delay
+            viewModel.checkLoginStatus()
+        }
+    }
+
+    private fun observeNavigationEvents() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.authState.collect { state ->
-                when (state) {
-                    is AuthState.Loading -> {
-                        continueButton.isEnabled = false
-                    }
-                    is AuthState.OtpSent -> {
-                        continueButton.isEnabled = true
-                        val email = etUserEmail.text.toString().trim()
-                        val bundle = Bundle().apply {
-                            putString("email", email)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigationEvent.collect { event ->
+                    when (event) {
+                        is NavigationEvent.NavigateToHome -> {
+                            startActivity(Intent(requireContext(), UserMainActivity::class.java))
+                            requireActivity().finish()
                         }
-                        findNavController().navigate(R.id.action_signinFragment_to_OTPFragment, bundle)
-                        viewModel.resetState()
-                    }
-                    is AuthState.Error -> {
-                        continueButton.isEnabled = true
-                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
-                        viewModel.resetState()
-                    }
-                    else -> {
-                        continueButton.isEnabled = true
+                        is NavigationEvent.NavigateToLogin -> {
+                            findNavController().navigate(R.id.action_splashFragment_to_signinFragment)
+                        }
                     }
                 }
             }

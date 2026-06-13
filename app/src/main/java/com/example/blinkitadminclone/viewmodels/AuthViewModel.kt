@@ -6,8 +6,11 @@ import com.example.blinkitadminclone.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.auth.OtpType
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 sealed class AuthState {
@@ -18,10 +21,29 @@ sealed class AuthState {
     data class Error(val message: String) : AuthState()
 }
 
+sealed class NavigationEvent {
+    object NavigateToHome : NavigationEvent()
+    object NavigateToLogin : NavigationEvent()
+}
+
 class AuthViewModel : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState
+
+    private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
+    val navigationEvent: SharedFlow<NavigationEvent> = _navigationEvent.asSharedFlow()
+
+    fun checkLoginStatus() {
+        viewModelScope.launch {
+            val isLoggedIn = SupabaseClient.client.auth.currentSessionOrNull() != null
+            if (isLoggedIn) {
+                _navigationEvent.emit(NavigationEvent.NavigateToHome)
+            } else {
+                _navigationEvent.emit(NavigationEvent.NavigateToLogin)
+            }
+        }
+    }
 
     fun sendOtp(email: String) {
         _authState.value = AuthState.Loading
