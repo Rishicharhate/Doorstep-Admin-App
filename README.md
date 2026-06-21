@@ -40,25 +40,19 @@ Doorstep consists of two separate Android applications:
 
 | Login                                         |
 | --------------------------------------------- |
-| <img src="app/src/main/res/drawable/login_screenshot.png" width="250"> |
+| <img src="app/src/main/res/drawable/signin_creenshot.png" width="250"> |
 
 ## Product Management
 
 | Dashboard                                         | Add Product                                         | Edit Product                                         |
 | ------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------- |
-| <img src="app/src/main/res/drawable/dashboard_screenshots.jpeg" width="250"> | <img src="screenshots/add_product_screenshots.jpeg" width="250"> | <img src="app/src/main/res/drawable//edit_product_screenshots.jpeg" width="250"> |
-
-## Inventory Management
-
-| Category Filter                                    | Search Products                                |
-| -------------------------------------------------- | ---------------------------------------------- |
-| <img src="app/src/main/res/drawable/categories_screenshots.jpeg" width="250"> | <img src="app/src/main/res/drawable/search_screenshots.jpeg" width="250"> |
+| <img src="app/src/main/res/drawable/dashboard_screenshots.jpeg" width="250"> | <img src="app/src/main/res/drawable/add_product_screenshots.jpeg" width="250"> | <img src="app/src/main/res/drawable//edit_screenshot.jpeg" width="250"> |
 
 ## Order Management
 
-| Orders                                         | Order Details                                         | Update Status                                        |
-| ---------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------- |
-| <img src="app/src/main/res/drawable/orders_screenshots.jpeg" width="250"> | <img src="app/src/main/res/drawable/order_details_screenshots.jpeg" width="250"> | <img src="app/src/main/res/drawable/order_status_screenshots.jpeg" width="250"> |
+| Orders                                         | Order Details                                         |
+| ---------------------------------------------- | ----------------------------------------------------- |
+| <img src="app/src/main/res/drawable/orders_screenshots.jpg" width="250"> | <img src="app/src/main/res/drawable/order_details_screenshots.jpeg" width="250"> |
 
 ---
 
